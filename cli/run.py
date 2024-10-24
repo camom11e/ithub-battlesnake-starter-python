@@ -4,6 +4,14 @@ import platform
 import subprocess
 
 
+def get_bot_url(bot_name):
+    bots = {
+        "dummy": "http://localhost:7001/dummy/",
+        "simple": "http://localhost:7001/simple/",
+    }
+    return bots[bot_name]
+
+
 def get_executable_path():
     def get_os_part(os_type):
         match os_type:
@@ -24,9 +32,8 @@ def get_executable_path():
     return str(current_directory / get_os_part(current_os) / binary_name)
 
 
-def main(browser=False):
+def main(browser=False, bots=[]):
     log_path = pathlib.Path(__file__).parent.parent / "tests" / "output.log"
-    print(str(log_path))
 
     host = os.environ.get("HOST", "localhost")
     port = int(os.environ.get("PORT", "4000"))
@@ -34,6 +41,9 @@ def main(browser=False):
 
     cli_path = get_executable_path()
     cli_params = ["play", "--name", "Snake", "--url", url]
+
+    for bot in bots:
+        cli_params.extend(["--name", bot, "--url", get_bot_url(bot)])
 
     if browser:
         cli_params.append("--browser")

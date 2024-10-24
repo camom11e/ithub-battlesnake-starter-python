@@ -33,8 +33,8 @@ def handle_move(game_state: dict) -> dict:
 
     # Are there any safe moves left?
     safe_moves = []
-    for move, isSafe in is_move_safe.items():
-        if isSafe:
+    for move, is_safe in is_move_safe.items():
+        if is_safe:
             safe_moves.append(move)
 
     # Move down if there is no better solution...
