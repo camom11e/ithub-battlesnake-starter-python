@@ -18,7 +18,7 @@ def main():
         }
 
     @app.route("/<snake_name>/start", methods=["POST"])
-    def start(snake_name):
+    def start():
         return "ok"
 
     @app.route("/<snake_name>/move", methods=["POST"])
@@ -37,10 +37,7 @@ def main():
         return json.dumps({"taunt": "hello", "move": move.direction()})
 
     @app.route("/<snake_name>/end", methods=["GET", "POST"])
-    def end(snake_name):
-        bots_survived.remove(snake_name)
-        if not bots:
-            request.environ.get("werkzeug.server.shutdown")()
+    def end():
         return "ok"
 
     app.run(host="localhost", port=7001, debug=True)
