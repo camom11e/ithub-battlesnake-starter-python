@@ -22,11 +22,40 @@ def handle_move(game_state: dict) -> dict:
         is_move_safe["up"] = False
 
     # TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
-    # board_width = game_state['board']['width']
-    # board_height = game_state['board']['height']
+    board_width = game_state['board']['width']
+    board_height = game_state['board']['height']
+    my_body = game_state['you']['body']
+    if my_head["x"] + 1 >= board_width:
+        is_move_safe["right"] = False
+    if my_head["x"] - 1 < 0:
+        is_move_safe["left"] = False
+    if my_head["y"] + 1 >= board_height:
+        is_move_safe["up"] = False
+    if my_head["y"] - 1 < 0:
+        is_move_safe["down"] = False
 
     # TODO: Step 2 - Prevent your snake from colliding with itself
-    # my_body = game_state['you']['body']
+    next_right = {"x": my_head["x"] + 1, "y": my_head["y"]}
+    if next_right in my_body:
+        is_move_safe["right"] = False
+
+    next_left = {"x": my_head["x"] - 1, "y": my_head["y"]}
+    if next_left in my_body:
+        is_move_safe["left"] = False
+
+    next_up = {"x": my_head["x"], "y": my_head["y"] + 1}
+    if next_up in my_body:
+        is_move_safe["up"] = False
+
+    next_down = {"x": my_head["x"], "y": my_head["y"] - 1}
+    if next_down in my_body:
+        is_move_safe["down"] = False
+
+    safe_moves = [direction for direction, safe in is_move_safe.items() if safe]
+    if len(safe_moves) == 0:
+        return "down"
+    elif len(safe_moves) == 1:
+        return safe_moves[0]
 
     # TODO: Step 3 - Prevent your snake from colliding with other snakes
     # opponents = game_state['board']['snakes']
