@@ -69,37 +69,17 @@ def handle_move(game_state: dict) -> dict:
             is_move_safe["down"] = False
 
     # Prevent collisions with other snakes
-    # Prevent collisions with other snakes, including head-to-head collisions
     opponents = game_state['board']['snakes']
     occupied_cells = get_occupied_cells(opponents)
-
-    for opponent in opponents:
-        opponent_head = opponent["body"][0]
-
-        # Check for potential head-to-head collisions
-        if (my_head["x"] + 1, my_head["y"]) == (opponent_head["x"], opponent_head["y"]) or \
-                (opponent_head["x"] - 1, opponent_head["y"]) == (my_head["x"], my_head["y"]):
+    for (x, y) in occupied_cells:
+        if (my_head["x"] + 1, my_head["y"]) == (x, y):
             is_move_safe["right"] = False
-        if (my_head["x"] - 1, my_head["y"]) == (opponent_head["x"], opponent_head["y"]) or \
-                (opponent_head["x"] + 1, opponent_head["y"]) == (my_head["x"], my_head["y"]):
+        if (my_head["x"] - 1, my_head["y"]) == (x, y):
             is_move_safe["left"] = False
-        if (my_head["x"], my_head["y"] + 1) == (opponent_head["x"], opponent_head["y"]) or \
-                (opponent_head["x"], opponent_head["y"] - 1) == (my_head["x"], my_head["y"]):
+        if (my_head["x"], my_head["y"] + 1) == (x, y):
             is_move_safe["up"] = False
-        if (my_head["x"], my_head["y"] - 1) == (opponent_head["x"], opponent_head["y"]) or \
-                (opponent_head["x"], opponent_head["y"] + 1) == (my_head["x"], my_head["y"]):
+        if (my_head["x"], my_head["y"] - 1) == (x, y):
             is_move_safe["down"] = False
-
-        # Prevent collisions with body segments of other snakes
-        for (x, y) in occupied_cells:
-            if (my_head["x"] + 1, my_head["y"]) == (x, y):
-                is_move_safe["right"] = False
-            if (my_head["x"] - 1, my_head["y"]) == (x, y):
-                is_move_safe["left"] = False
-            if (my_head["x"], my_head["y"] + 1) == (x, y):
-                is_move_safe["up"] = False
-            if (my_head["x"], my_head["y"] - 1) == (x, y):
-                is_move_safe["down"] = False
 
     # Collect safe moves
     safe_moves = [move for move, is_safe in is_move_safe.items() if is_safe]
@@ -108,5 +88,6 @@ def handle_move(game_state: dict) -> dict:
     if not safe_moves:
         return {"move": "down"}
 
+    # Choose a random move from the safe ones
     next_move = random.choice(safe_moves)
     return {"move": next_move}
